@@ -1,0 +1,43 @@
+git_project/
+│   ├── full_requirements.txt
+│   ├── print_projectstructure.py
+│   ├── project_structure.txt
+│   └── readme.txt
+│   ├── data_clean/
+│   │   ├── Coast_main.csv
+│   │   ├── NC_main.csv
+│   │   ├── SC_main.csv
+│   │   ├── South_main.csv
+│   │   ├── elec_2002-2024.csv
+│   │   └── population_2000_2023.csv
+│   ├── data_raw/
+│   │   ├── 2021_txpopest_county.csv
+│   │   ├── 2022_txpopest_county.csv
+│   │   ├── 2023_txpopest_county.csv
+│   │   ├── co-est00int-01-48.xls
+│   │   ├── co-est2020int-pop-48.xlsx
+│   │   └── notes_data.docx
+│   ├── script/
+│   │   └── 00_installRpackages.R
+│   │   ├── 00_drawmap/
+│   │   │   ├── Texas Counties Cartographic Boundary Map_20250116.geojson
+│   │   │   ├── draw_pop_county_city_all4.py
+│   │   │   └── region_county_station_list.xlsx
+│   │   ├── S0_processdata/
+│   │   │   ├── 1_population.py
+│   │   │   ├── 2_regionaverage_all.py
+│   │   │   ├── 3_combinedata_all.py
+│   │   │   ├── county_station_list.xlsx
+│   │   │   └── dst_start_end.xlsx
+│   │   ├── S1_models/
+│   │   │   ├── 00_getholidays.R
+│   │   │   ├── 00_getsunlighttimes.R
+│   │   │   ├── S1_0_prepare_allregions.R
+│   │   │   ├── S1_1_models_allregions.R
+│   │   │   ├── S1_2_hourly_NC.R
+│   │   │   └── S1_2_hourly_South.R
+│   │   ├── S2_figures/
+│   │   │   ├── 1_boots_R6class.R
+│   │   │   ├── S2_1_description_pool.R
+│   │   │   ├── S2_2_hourly_NC.R
+│   │   │   └── S2_2_hourly_moreregions.R

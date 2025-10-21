@@ -5,7 +5,14 @@ import glob
 import os
 import numpy as np
 
-md = 'D:/OneDrive - University of Missouri/transfer_desktop/MU/2025spring_submit2'
+thisdir = os.path.dirname(__file__)
+md = os.path.abspath(os.path.join(thisdir, '..', '..'))
+md_script = os.path.join(md, 'script')
+dirname_cleandata = 'data_clean'
+## In hope that your own generation matches mine, you can just proceed with the provided data. 
+## If not, you may change to your own data directory such as dirname_cleandata = 'data_cleaned_now'
+md_rawdata = os.path.join(md, 'data_raw', 'GHCNh_Texas')
+## I presume you have downloaded and unzipped 'GHCNh_Texas.zip' from designated Zenodo dataset: https://zenodo.org/records/15996334
 
 regions = ['NC', 'SC', 'Coast', 'South']
 cols_w = ['temperature', 'dew_point_temperature', 'station_level_pressure', 'wind_speed', 'precipitation', 
@@ -41,11 +48,11 @@ def skycover_numerize(x):
         return np.nan
 #%%
 # Import population data
-dt_pop = pd.read_csv(os.path.join(md, 'data_clean', 'population_2000_2023.csv')) # change to 2024 if 2024 population is available 
+dt_pop = pd.read_csv(os.path.join(md, dirname_cleandata, 'population_2000_2023.csv'))
 #%% ############ Loop. a ############
 print('I. Processing station data for all counties...')
 for region in regions[0:4]: # SC, Coast, South # Change to 0:4 if have not done NC
-    inpath = f'D:/OneDrive - University of Missouri/transfer_desktop/MU/database/GHCNh_Texas/{region}'
+    inpath = os.path.join(md_rawdata, region)
     outpath = os.path.join(md, 'data_intermediate', region) # store the county data here
     if not os.path.exists(outpath):
         os.mkdir(outpath)
@@ -54,7 +61,7 @@ for region in regions[0:4]: # SC, Coast, South # Change to 0:4 if have not done 
     psv_filepaths = [os.path.join(inpath, file) for file in os.listdir(inpath) if file.endswith('.psv')]
 
     # Get station-county mapping from the list
-    df_station = pd.read_excel(os.path.join(md, 'S0_processdata', 'county_station_list.xlsx'), sheet_name=region, usecols='A,C')
+    df_station = pd.read_excel(os.path.join(md_script, 'S0_processdata', 'county_station_list.xlsx'), sheet_name=region, usecols='A,C')
     df_station = df_station.rename(columns={'County': 'county', 'ID': 'Station_ID'})
     df_station[['county', 'Station_ID']] = df_station[['county', 'Station_ID']].apply(lambda x: x.str.strip())
     ## remove leading/trailing spaces
@@ -116,6 +123,6 @@ for region in regions[0:4]:
     # Let '2024-01-01 00:00' population be the same as 2023  
     dt_counties['population'] = dt_counties['population'].fillna(method='ffill') # forward filling missing values
     wt_avgs = weighted_avg(dt_counties, cols_w, 'population')
-    wt_avgs.to_csv(os.path.join(md, 'data_clean', f'{region}_weather_2000-2024.csv'), index=False)
+    wt_avgs.to_csv(os.path.join(md, dirname_cleandata, f'{region}_weather_2000-2024.csv'), index=False)
     print(f'{region} is done.')
 # End of script

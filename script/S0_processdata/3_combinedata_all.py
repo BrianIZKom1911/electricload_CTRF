@@ -4,13 +4,18 @@ import pandas as pd
 import numpy as np
 import os
 
-md = 'D:/OneDrive - University of Missouri/transfer_desktop/MU/2025spring_submit2'
+thisdir = os.path.dirname(__file__)
+md = os.path.abspath(os.path.join(thisdir, '..', '..'))
+md_script = os.path.join(md, 'script')
+dirname_cleandata = 'data_clean' # Same caveat applies 
+#dirname_cleandata = 'data_cleaned_now'
+
 regions = ['NC', 'SC', 'Coast', 'South']
 cols_region = ['COAST', 'EAST', 'FAR_WEST', 'NORTH', 'NORTH_C', 'SOUTH', 'SOUTH_C', 'WEST', 'ERCOT']
 dict_name = {'NC': 'NORTH_C', 'SC': 'SOUTH_C', 'Coast': 'COAST', 'South': 'SOUTH', 'East': 'EAST', 'FW': 'FAR_WEST', 'West': 'WEST', 'North': 'NORTH'}
 #%%
 # Import DST dates and make a dictionary for Central Time
-df_dst = pd.read_excel(os.path.join(md, 'S0_processdata', 'dst_start_end.xlsx'), 
+df_dst = pd.read_excel(os.path.join(thisdir, 'dst_start_end.xlsx'), 
                        sheet_name='Sheet2', index_col=None, dtype={'year': int, 'start': str, 'end': str})
 df_dst['start'] = pd.to_datetime(df_dst['dst_start']) + pd.to_timedelta(3, unit='h') # 3:00 AM in Central Time
 df_dst['end'] = pd.to_datetime(df_dst['dst_end']) + pd.to_timedelta(2, unit='h') # 2:00 AM in Central Time
@@ -34,7 +39,7 @@ def UTC_time(date, dst):
         return date + pd.Timedelta(6, unit='h')
 #%%
 # Import ERCOT data
-dt_y = pd.read_csv(os.path.join(md, 'data_clean', 'elec_2002-2024.csv'))
+dt_y = pd.read_csv(os.path.join(md, dirname_cleandata, 'elec_2002-2024.csv'))
 dt_y = dt_y.drop(columns=['Hour_Ending']) # drop unused columns
 dt_y['datetime_CPT'] = pd.to_datetime(dt_y['Date']) + pd.to_timedelta(dt_y['Hour'], unit='h')
 # Fill in missing values on 2022-12-01 01:00 (which is due to original recording error)
@@ -58,7 +63,7 @@ dt_y['datetime_UTC'] = dt_y[['datetime_CPT', 'DST']].apply(lambda x: UTC_time(*x
 print('Merging data for each region...')
 for region in regions[0:4]: # change it to 0:4 if have not done NC
     # Import region weather
-    dt_w = pd.read_csv(os.path.join(md, 'data_clean', f'{region}_weather_2000-2024.csv'))
+    dt_w = pd.read_csv(os.path.join(md, dirname_cleandata, f'{region}_weather_2000-2024.csv'))
     dt_w['datetime'] = pd.to_datetime(dt_w['datetime'])
     dt_w = dt_w.rename(columns={'datetime': 'datetime_UTC'})
     # Merge with dt_w
@@ -68,7 +73,7 @@ for region in regions[0:4]: # change it to 0:4 if have not done NC
     dt_region = dt_region.drop(columns=cols_drop) # drop the other regions
     dt_region = dt_region.rename(columns={rname: 'load'}) # change rname to load
     dt_region = dt_region.dropna(subset=['load']) # drop na in load
-    dt_region.to_csv(os.path.join(md, 'data_clean', f'{region}_main.csv'), index=False)
+    dt_region.to_csv(os.path.join(md, dirname_cleandata, f'{region}_main.csv'), index=False)
     print(f'{region} is done.')
 # CAVEAT: DON'T open those files in Excel; otherwise, there would be unwanted conversion of format. Read them in R or pandas
 # End of script

@@ -6,15 +6,18 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import os
 import pandas as pd
-# %% # Import GeoJSON
-md = 'D:/OneDrive - University of Missouri/transfer_desktop/MU/2025spring_submit2'
-os.chdir(md) # changeth to the target directory
-counties = gpd.read_file('Texas Counties Cartographic Boundary Map_20250116.geojson')
+# %% # Set up paths
+thisdir = os.path.dirname(__file__)
+md_output = os.path.abspath(os.path.join(thisdir, '..', '..', 'output'))
+os.makedirs(md_output, exist_ok=True)
+# Import GeoJSON
+counties = gpd.read_file(os.path.join(thisdir, 'Texas Counties Cartographic Boundary Map_20250116.geojson'))
+# Source: https://data.texas.gov/dataset/Texas-Counties-Cartographic-Boundary-Map/sw7f-2kkd/about_data
 counties['id'] = counties.index.astype(str)  # ensure the ID is a string to match GeoJSON
 counties = counties.to_crs(epsg=4326)  # reproject to WGS84
 
 # %%
-file_path = os.path.join(md, 'region_county_station_list.xlsx')
+file_path = os.path.join(thisdir, 'region_county_station_list.xlsx')
 # Initialize empty lists to store all data
 all_choropleths = [None] * 4
 all_scattergeos = [None] * 4
@@ -106,5 +109,5 @@ fig.update_layout(
 )
 
 # %% # Save the plot
-fig.write_html('plot_pop_county_all4.html')
+fig.write_html(os.path.join(md_output, 'plot_pop_county_all4.html'))
 # End of script.

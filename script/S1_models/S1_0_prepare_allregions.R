@@ -13,6 +13,7 @@ geten_dummies <- function(data, colname){
   return(data)
 }
 
+md <- here()
 regions <- c("NC", "SC", "Coast", "South")
 
 # Import main data and process --------------------------------------

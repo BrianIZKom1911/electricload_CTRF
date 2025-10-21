@@ -64,6 +64,7 @@ print_output <- function(..., filepath, text=NULL){
   invisible()
 }
 
+md <- here()
 regions <- c("NC", "SC", "Coast", "South")
 
 # NC -----------------------------------------------------
