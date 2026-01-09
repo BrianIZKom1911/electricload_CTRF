@@ -18,7 +18,8 @@ git_project/
 │   │   ├── co-est2020int-pop-48.xlsx
 │   │   └── notes_data.docx
 │   ├── script/
-│   │   └── 00_installRpackages.R
+│   │   ├── 00_installRpackages.R
+│   │   └── 01_downloadmypackage.R
 │   │   ├── 00_drawmap/
 │   │   │   ├── Texas Counties Cartographic Boundary Map_20250116.geojson
 │   │   │   ├── draw_pop_county_city_all4.py
@@ -34,10 +35,13 @@ git_project/
 │   │   │   ├── 00_getsunlighttimes.R
 │   │   │   ├── S1_0_prepare_allregions.R
 │   │   │   ├── S1_1_models_allregions.R
-│   │   │   ├── S1_2_hourly_NC.R
-│   │   │   └── S1_2_hourly_South.R
+│   │   │   └── S1_2_hourly_NC.R
 │   │   ├── S2_figures/
-│   │   │   ├── 1_boots_R6class.R
-│   │   │   ├── S2_1_description_pool.R
-│   │   │   ├── S2_2_hourly_NC.R
-│   │   │   └── S2_2_hourly_moreregions.R
+│   │   │   ├── S2_1_describe_pooledTRF.R
+│   │   │   ├── S2_2_hourly_singlefigures_NC.R
+│   │   │   └── S2_3_hourlyCTRF_all.R
+│   │   ├── S3_supplement/
+│   │   │   ├── S3_A_ridgeline.R
+│   │   │   ├── S3_B_1_hourlyTRF_separatefigures.R
+│   │   │   ├── S3_B_2_renamefiles.py
+│   │   │   └── S3_B_3_makegif.py
