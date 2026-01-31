@@ -23,14 +23,13 @@ df_info$xlim <- list(c(-10, 42), c(-10, 42), c(-10, 42), c(-8, 40))
 # Run Hourly CTRF on Subsamples -----------------------------------------------
 # Workday and seasons
 
-DO_THIS_CTRF <- function(region, season, workdayonly=FALSE) {
+DO_THIS_CTRF <- function(saveto, region, season, workdayonly=FALSE) {
     #'
     #' This is an fixed procedure to do all CTRF plots for given region and season.
     #' Dataset and parameters for the Bootstrap class are fixed, e.g. df_into, group_vars _orders.
     #' If you want to use different parameters, must change the procedure hereafter.
     #' 
-    savedir <- here(paste0("extraoutput_", region), season)
-    dir.create(savedir, showWarnings = FALSE)
+    dir.create(saveto, showWarnings = FALSE)
     data <- readRDS(here("script", "S1_models", paste0(region, "_run.RDS")))
     data$logy <- log(data$load)
     # Remove Ike Hurricane influenced period for Coast only
@@ -116,36 +115,41 @@ DO_THIS_CTRF <- function(region, season, workdayonly=FALSE) {
         df_ctrf_5 <- ctrf$aggregated_data[[6]] # skc cTRF coefs
         draw_save_CTRF(
             df_ctrf_2, "PRCP", paste0(hr, ":00"), 
-            suffix=paste0("2_h", hr, "_", season), save_dir=savedir, 
+            suffix=paste0("2_h", hr, "_", season), save_dir=saveto, 
             x_breaks=seq(-10, 40, 5), y_lim=c(-0.1, 0.11)
         )
         draw_save_CTRF(
             df_ctrf_3, "RH", paste0(hr, ":00"), 
-            suffix=paste0("3_h", hr, "_", season), save_dir=savedir, 
-            x_breaks=seq(-10, 40, 5), y_lim=c(-0.1, 0.12)
+            suffix=paste0("3_h", hr, "_", season), save_dir=saveto, 
+            x_breaks=seq(-10, 40, 5), y_lim=c(-0.1, 0.13)
         )
         draw_save_CTRF(
             df_ctrf_4, "WSP", paste0(hr, ":00"), 
-            suffix=paste0("4_h", hr, "_", season), save_dir=savedir, 
+            suffix=paste0("4_h", hr, "_", season), save_dir=saveto, 
             x_breaks=seq(-10, 40, 5), y_lim=c(-0.1, 0.11)
         )
         draw_save_CTRF(
             df_ctrf_5, "SKC", paste0(hr, ":00"), 
-            suffix=paste0("5_h", hr, "_", season), save_dir=savedir, 
+            suffix=paste0("5_h", hr, "_", season), save_dir=saveto, 
             x_breaks=seq(-10, 40, 5), y_lim=c(-0.1, 0.11)
         )
     }
     invisible()
 }
 
-# Test: NC summer workdays
-#region <- regions[2]
-#DO_THIS_CTRF(region, "summer", workdayonly = TRUE)
+# Test: NC workdays, every season (3)
+region <- regions[2]
+for (sn in c("summer", "winter", "SnF")) {
+    savedir <- here(paste0("output_", region), sn) # NC workdays in main output
+    DO_THIS_CTRF(savedir, region, sn, workdayonly = TRUE)
+}
 
-# Loop
+# Loop: every region (4), every season (3)
 for (region in regions) {
-  cat("Working on ", region, "Region:\n")
-  DO_THIS_CTRF(region, "summer", workdayonly = FALSE)
-  DO_THIS_CTRF(region, "winter", workdayonly = FALSE)
+    cat("Working on ", region, "Region:\n")
+    for (sn in c("summer", "winter", "SnF")) {
+        savedir <- here("extraoutput", region, sn) # more in extra output
+        DO_THIS_CTRF(savedir, region, sn, workdayonly = FALSE)
+    }
 }
 # End of script.

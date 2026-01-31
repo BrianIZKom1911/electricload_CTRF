@@ -5,7 +5,8 @@ import os
 import re
 
 thisdir = os.path.dirname(__file__)
-in_dir = os.path.join(thisdir, 'gifsourceimages')
+md = os.path.abspath(os.path.join(thisdir, '..', '..'))
+in_dir = os.path.join(md, 'extraoutput')
 # Two patterns to match:
 # 1) "trf_plot_bt_h<hour>.png"
 pattern1 = re.compile(r"(trf_plot_bt_h)(\d+)(\.png)$") # \d means one digit

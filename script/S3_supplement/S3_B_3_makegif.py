@@ -4,8 +4,9 @@ import os
 from PIL import Image # needs Pillow
 
 thisdir = os.path.dirname(__file__)
-in_dir = os.path.join(thisdir, 'gifsourceimages')
-out_dir = os.path.join(thisdir, 'appfigures', 'output_gif')
+md = os.path.abspath(os.path.join(thisdir, '..', '..'))
+in_dir = os.path.join(md, 'extraoutput')
+out_dir = os.path.join(md, 'output_gif')
 os.makedirs(out_dir, exist_ok=True)
 #%% Define an no-output procedure
 def DO_BATCH_CONVERT(file_path, file_list, save_path, name, duration):
@@ -33,7 +34,7 @@ def DO_BATCH_CONVERT(file_path, file_list, save_path, name, duration):
 
 #%% 
 regions = ['Coast', 'NC', 'SC', 'South']
-seasons = ['winter', 'summer']
+seasons = ['winter', 'summer', 'SnF']
 varnoms = ['prcp', 'rh', 'wsp', 'skc']
 
 for region in regions:
@@ -45,9 +46,12 @@ for region in regions:
     # List and filter TRF files for this region
     if os.path.exists(filepath1):
         trf_files = [f for f in os.listdir(filepath1) if f.startswith("trf_plot_bt_h") and f.endswith(".png")]
-    
+    # Skip if the result already exists
     name_trf = f"{region}_TRF24.gif"
-    DO_BATCH_CONVERT(filepath1, trf_files, out_dir, name_trf, duration=300)
+    if os.path.exists(os.path.join(out_dir, name_trf)):
+        print(f"Skipping {name_trf}, which already exists.")
+    else:
+        DO_BATCH_CONVERT(filepath1, trf_files, out_dir, name_trf, duration=300)
     
     # II) CTRF pic conversion
     for season in seasons:
@@ -62,9 +66,12 @@ for region in regions:
         for i, varnom in enumerate(varnoms, start=2):
             chead = f"CTRF_{i}_"
             cfes = [fe for fe in allfiles if fe.startswith(chead) and fe.endswith(".png")]
-        
+            # Skip if the result already exists
             name_wc = f"AB_{short}_{varnom}_{season}.gif"
-            DO_BATCH_CONVERT(filepath2, cfes, out_dir, name_wc, duration=500)
+            if os.path.exists(os.path.join(out_dir, name_wc)):
+                print(f"Skipping {name_wc}, which already exists.")
+            else:
+                DO_BATCH_CONVERT(filepath2, cfes, out_dir, name_wc, duration=500)
 
 print("Conversion complete.")
 # End of script.

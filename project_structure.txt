@@ -44,4 +44,5 @@ git_project/
 │   │   │   ├── S3_A_ridgeline.R
 │   │   │   ├── S3_B_1_hourlyTRF_separatefigures.R
 │   │   │   ├── S3_B_2_renamefiles.py
-│   │   │   └── S3_B_3_makegif.py
+│   │   │   ├── S3_B_3_makegif.py
+│   │   │   └── S3_C_ending.R
