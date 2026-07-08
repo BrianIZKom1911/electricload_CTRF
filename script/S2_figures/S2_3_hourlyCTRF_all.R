@@ -1,5 +1,5 @@
-# Draw for four regions, two seasons, all hours (24), including PRCP.
-# This script generates more CTRF graphs. They can be compressed into (32) GIFs 
+# Draw for four regions, three seasons, all hours (24), including PRCP.
+# This script generates more CTRF graphs. They can be compressed into (48) GIFs 
 # or just kept for record.
 rm(list = ls())
 
@@ -68,6 +68,8 @@ DO_THIS_CTRF <- function(saveto, region, season, workdayonly=FALSE) {
         smons <- c(6, 7, 8)
     } else if (season=="winter") { # Winter: January, February, December
         smons <- c(1, 2, 12)
+    } else { # Spring and Fall
+        smons <- c(3, 4, 5, 9, 10, 11)
     }
     if (workdayonly) { # whether exclude holidays&weekends
         dt_sub <- data[(data$workday==1) & (data$Month %in% smons), ]
@@ -75,7 +77,7 @@ DO_THIS_CTRF <- function(saveto, region, season, workdayonly=FALSE) {
         dt_sub <- data[data$Month %in% smons, ]
     }
     # Trim temp extremes for the other regions
-    iftrim <- ifelse(region=="NC", FALSE, TRUE)
+    iftrim <- region!="NC"
     
     hrs <- 0:23
     for (hr in hrs) {
@@ -85,15 +87,15 @@ DO_THIS_CTRF <- function(saveto, region, season, workdayonly=FALSE) {
         x_range <- c(ceiling(a), floor(b)) # make the range an subset of (a, b)
         # Generate and keep needed variables
         dt_b <- dt_hr |>
-        dplyr::mutate(
-            s_t = ts*ntd, sin1_t = sin1*ntd, cos1_t = cos1*ntd,
-            s_p = ts*prcp, sin1_p = sin1*prcp, cos1_p = cos1*prcp,
-            s_h = ts*rhum, sin1_h = sin1*rhum, cos1_h = cos1*rhum,
-            s_w = ts*wsp, sin1_w = sin1*wsp, cos1_w = cos1*wsp,
-            s_c = ts*skc, sin1_c = sin1*skc, cos1_c = cos1*skc
-        ) |>
-        dplyr::select(tidyselect::all_of(c("logy", xb_terms, xc_terms))) |>
-        na.omit()
+            dplyr::mutate(
+                s_t = ts*ntd, sin1_t = sin1*ntd, cos1_t = cos1*ntd,
+                s_p = ts*prcp, sin1_p = sin1*prcp, cos1_p = cos1*prcp,
+                s_h = ts*rhum, sin1_h = sin1*rhum, cos1_h = cos1*rhum,
+                s_w = ts*wsp, sin1_w = sin1*wsp, cos1_w = cos1*wsp,
+                s_c = ts*skc, sin1_c = sin1*skc, cos1_c = cos1*skc
+            ) |>
+            dplyr::select(tidyselect::all_of(c("logy", xb_terms, xc_terms))) |>
+            na.omit()
         # Run CTRF Bootstrap
         ctrf <- CTRF_Model$new(
             data = dt_b, 
